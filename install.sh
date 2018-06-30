@@ -4,8 +4,8 @@
 brew install brew-cask
 brew cask install virtualbox minikube 
 brew install kubernetes-helm bash-completion
-# Start the minikube with 4 GB RAM and 2 CPUs
-minikube start --memory 4096 --cpus 2
+# Start the minikube with 8 GB RAM and 2 CPUs
+minikube start --memory 8192 --cpus 2
 
 
 
@@ -15,7 +15,8 @@ wget -O master.zip https://goo.gl/khJzMu
 unzip master.zip
 
 # Initialize the helm and helm chart
-helm init
+helm init --upgrade
+sleep 5
 helm install mongodb-enterprise-kubernetes-master/helm_chart/ --name mongodb-enterprise
 
 # If helm is not available
@@ -24,3 +25,6 @@ helm install mongodb-enterprise-kubernetes-master/helm_chart/ --name mongodb-ent
 
 # Clean up the files and folders
 rm -rf master.zip mongodb-enterprise-kubernetes-master/
+
+# display all the resources in mongodb namespace
+kubectl -n mongodb get all

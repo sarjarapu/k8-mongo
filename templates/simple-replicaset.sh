@@ -43,9 +43,10 @@ spec:
   credentials: "${K8_NAMESPACE}-credentials"
   persistent: false  # For testing only
   podSpec:
-    cpu: '0.5'
-    memory: 256M
+    cpu: '0.25'
+    memory: 128M
     storage: 2G
 EOF
 
-echo "Dynamically generated an yaml file based on the settings. Location: samples/${TARGET_FILE}"
+echo "Dynamically generated an yaml file based on the settings. Now execute below command to create a replica set."
+echo "kubectl apply -f samples/${TARGET_FILE}"

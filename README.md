@@ -1,6 +1,8 @@
-# Official - MongoDB Enterprise on Kubernetes
+# Getting started with MongoDB Enterprise on Kubernetes
 
 ## Introduction
+
+The MongoDB Enterprise Operator is now a public beta program to deploy MongoDB on Kubernetes v1.9+. This article is a quickstart beginners guide to help you get started with MongoDB Enterprise on Kubernetes.
 
 ## Install the dependencies on your machine
 
@@ -22,9 +24,9 @@ If you happened to manually install the dependencies, you must also install the 
 
 The `mongodb-enterprise-kubernetes` operator is supported for MongoDB Enterprise Ops Manager v4.0+. So please have the Ops Manager v4.0 or above ready.
 
-> Note: _The instructions for installing the Ops Manager v4.0 or higher is out of scope for this article. You may also use the MongoDB Cloud Manager v4.0 as an interim solution._
+> Note: _The instructions for installing the Ops Manager v4.0 or higher is out of scope for this article. You may also use the [MongoDB Cloud Manager](https://www.mongodb.com/cloud/cloud-manager) as an interim solution._
 
-Once the Ops Manager / Cloud Manager is up and running, please follow the below instructions and have the information ready / configured
+Once the Ops Manager is up and running, please follow the below instructions and have the information ready / configured
 
 - Make a note of the Ops Manager Uri
 - Create a Project in Ops Manager
@@ -56,7 +58,7 @@ OM_URL="https://cloud.mongodb.com/"
 MONGODB_VERSION="3.6.5"
 ```
 
-> Note: _Please ensure that the MongoDB version is selected in the Version Manager of your Ops Manager or Cloud Manager._
+> Note: _Please ensure that the MongoDB version is selected in the Version Manager of your Ops Manager._
 
 ## Create a simple replica set
 
@@ -67,6 +69,7 @@ I have provided a sample template file for your convenience. Using the values de
 sh templates/simple-replicaset.sh
 
 # create the replica set based on the generated yaml output
+source templates/environment.sh
 kubectl apply -f samples/${K8_NAMESPACE}-replicaset.yaml
 ```
 
@@ -77,9 +80,11 @@ Based on your internet download speed, the resources associated are created for 
 kubectl -n $K8_NAMESPACE get all
 ```
 
-## Check Enterprise Operator logs for errors
+## Troubleshooting
 
-Sometimes you may notice that MongoDbReplicaSet is never created for you. To figure out what went wrong, you would have to check the logs on the `mongodb-enterprise-operator` pod. 
+### Check Enterprise Operator logs for errors
+
+Sometimes you may notice that _MongoDbReplicaSet_ creation did not succeed. To figure out what went wrong, you would have to check the logs on the `mongodb-enterprise-operator` pod.
 
 ```bash
 # find the pod name for mongodb-enterprise-operator  using selectors
@@ -89,22 +94,30 @@ K8_OPERATOR_POD_NAME=$(kubectl -n mongodb get pods --selector=app=mongodb-enterp
 kubectl -n mongodb logs $K8_OPERATOR_POD_NAME
 ```
 
-Some of you the typical errors many come across are related to
+The typical errors some of you may incur are related to
 
 - Current IP Address is not added to Whitelist
 - MongoDB Version not checked/binaries not available on Ops Manager
 
-If there are any errors found, then you may have to fix them and recreate the operator pod before creating the replica set again.
+If you find the errors in your logs, then have to fix them and may have to recreate the operator pod before creating the replica set again.
 
 ```bash
 # delete the existing pod after fixing the issue
 kubectl -n mongodb delete pod $K8_OPERATOR_POD_NAME
 
+sleep 5
 # rerun the kubectl apply -f <samples/replicaset.yaml> script again
+source templates/environment.sh
 kubectl apply -f samples/${K8_NAMESPACE}-replicaset.yaml
+
+sleep 5
+# display all the resources in the namespace
+kubectl -n ${K8_NAMESPACE} get all
 ```
 
-## Delete MongoDbReplicaset
+## Delete MongoDB replica set
+
+Issue the below command to delete the _MongoDbReplicaSet_. The Ops Manager deployment in the given project should have been removed as well. If for any reason this project still exists, you have to go to Deployment > ... > _Remove from Ops Manager_ to remove it completely.
 
 ```bash
 kubectl delete -f samples/${K8_NAMESPACE}-replicaset.yaml
