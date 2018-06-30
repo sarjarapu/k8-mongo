@@ -117,8 +117,38 @@ kubectl -n ${K8_NAMESPACE} get all
 
 ## Delete MongoDB replica set
 
-Issue the below command to delete the _MongoDbReplicaSet_. The Ops Manager deployment in the given project should have been removed as well. If for any reason this project still exists, you have to go to Deployment > ... > _Remove from Ops Manager_ to remove it completely.
+The below command will delete the _MongoDbReplicaSet_. The Ops Manager deployment in the given project should have been removed as well. If for any reason this project still exists, you have to go to Deployment > ... > _Remove from Ops Manager_ to remove it completely.
 
 ```bash
 kubectl delete -f samples/${K8_NAMESPACE}-replicaset.yaml
+```
+
+## Remove the MongoDB Enterprise Operator
+
+If you want to completely remove the MongoDB Enterprise Operator for Kubernetes then you could use either _helm_ or _source_ options
+
+```bash
+# use helm to delete the operator
+helm delete --purge mongodb-enterprise;
+sleep 5
+# display all the resources in mongodb namespace
+kubectl -n mongodb get all
+```
+
+```bash
+# If helm is not available
+
+# Download the mongodb-enterprise-kubernetes git source
+wget -O master.zip https://goo.gl/khJzMu
+unzip master.zip
+
+# Install the enterprise operator via yaml
+kubectl delete -f mongodb-enterprise-kubernetes-master/mongodb-enterprise.yaml
+
+# Clean up the files and folders
+rm -rf master.zip mongodb-enterprise-kubernetes-master/
+
+sleep 5
+# display all the resources in mongodb namespace
+kubectl -n mongodb get all
 ```
