@@ -37,6 +37,8 @@ Once the Ops Manager is up and running, please follow the below instructions and
 - Find your [public IP address](https://www.whatismyip.com/)
 - Whitelist your IP Address
   Account > Public API Access > API Whitelist
+- Configure Version Manager with MongoDB versions of your interest
+  Deployments > More > Version Manager
 
 ## Configuring your environment
 
@@ -62,11 +64,11 @@ MONGODB_VERSION="3.6.5"
 
 ## Create a simple replica set
 
-I have provided a sample template file for your convenience. Using the values defined in the `templates/environment.sh` file and the template file, `templates/simple-replicaset.sh`, you could easily generate custom yaml file, `samples/<kubernetes_namespace>-replicaset.yaml`, and create the simple replica set using the below commands.
+I have provided a sample template file for your convenience. Using the values defined in the `templates/environment.sh` file and the template file, `templates/generate-yaml-simple-replicaset.sh`, you could easily generate custom yaml file, `samples/<kubernetes_namespace>-replicaset.yaml`, and create the simple replica set using the below commands.
 
 ```bash
 # create the yaml file using the template
-sh templates/simple-replicaset.sh
+sh templates/generate-yaml-simple-replicaset.sh
 
 # create the replica set based on the generated yaml output
 source templates/environment.sh
