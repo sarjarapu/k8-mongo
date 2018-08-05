@@ -44,7 +44,7 @@ spec:
   persistent: false  # For testing only
   podSpec:
     cpu: '0.25'
-    memory: 128M
+    memory: 512M # WTC is MAX(50% RAM-1GB, 256MB)
     storage: 2G
 EOF
 
